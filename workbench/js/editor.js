@@ -7,17 +7,13 @@
   const cssEditorEl = document.getElementById("css-editor");
   const htmlEditorEl = document.getElementById("html-editor");
   const jsEditorEl = document.getElementById("js-editor");
-  const cssEditorPreEl = cssEditorEl.querySelector("pre");
-  const htmlEditorPreEl = htmlEditorEl.querySelector("pre");
-  const jsEditorPreEl = jsEditorEl.querySelector("pre");
-  const outputHead = document.getElementById("output-head");
-  const outputBody = document.getElementById("output-body");
   const tabContainer = document.getElementById("tab-container");
   const tabButton = tabContainer.querySelectorAll('button[role="tab"]');
   const tablist = document.getElementById("tablist");
-  const iframeContent = `\n<!DOCTYPE html>\n<html id="output-root">\n<head>${outputHead.innerHTML}</head>\n<body style="background-color: var(--background-primary);">${outputBody.innerHTML}</body>\n</html>\n`;
   const run = document.getElementById("run");
-  let timer;
+  const basehtml = document.getElementById("basehtml");
+  const isautorun = document.getElementById("isautorun");
+  const download = document.getElementById("download");
   class Storage {
     constructor(options) {
       this.storeHandler = localStorage;
@@ -97,7 +93,7 @@
       }
     });
   }
-  function writeIframe() {
+  function generateSrcDoc() {
     const contentMap = {
       htmlContent: htmlEditor.getValue(),
       cssContent: cssEditor.getValue(),
@@ -106,23 +102,59 @@
     storage.set("cssContent", contentMap.cssContent);
     storage.set("htmlContent", contentMap.htmlContent);
     storage.set("jsContent", contentMap.jsContent);
-    const srcdoc = iframeContent
-      .replace("/* css-content */", contentMap.cssContent)
-      ?.replace("<!-- html-content -->", contentMap.htmlContent)
-      .replace("/* js-content */", contentMap.jsContent);
+    var html = contentMap.htmlContent,
+      css = contentMap.cssContent,
+      js = contentMap.jsContent,
+      src = html;
+    if (html) {
+      var patternHtmlTag = /<html([^>]*)>/im;
+      var array_matches_html_tag = patternHtmlTag.exec(src);
+      if (array_matches_html_tag) {
+        src = src.replace("<html>", "<html " + array_matches_html_tag[1] + ">");
+      }
+      var patternHead = /<head[^>]*>((.|[\n\r])*)<\/head>/im;
+      var array_matches_head = patternHead.exec(src);
+
+      var patternBodyTag = /<body([^>]*)>/im;
+      var array_matches_body_tag = patternBodyTag.exec(src);
+      if (array_matches_body_tag) {
+        src = src.replace("<body>", "<body " + array_matches_body_tag[1] + ">");
+      }
+    }
+    // CSS
+    if (css) {
+      css = "\n<style>\n" + css + "\n</style>\n";
+      if (array_matches_head) {
+        src = src.replace("</head>", css + "</head>");
+      } else if (array_matches_body_tag) {
+        src = src.replace("</body>", css + "</body>");
+      } else {
+        src += css;
+      }
+    }
+
+    // Javascript
+    if (js) {
+      js = "\n<script>\n" + js + "\n</script>\n";
+      if (array_matches_body_tag) {
+        src = src.replace("</body>", js + "</body>");
+      } else {
+        src += js;
+      }
+    }
+    var text = src;
+    return text;
+  }
+  function writeIframe() {
+    const text = generateSrcDoc();
     const ifrw = outputIframe.contentWindow
       ? outputIframe.contentWindow
       : outputIframe.contentDocument.document
       ? outputIframe.contentDocument.document
       : outputIframe.contentDocument;
     ifrw.document.open();
-    ifrw.document.write(srcdoc);
+    ifrw.document.write(text);
     ifrw.document.close();
-    // outputIframe.srcdoc = srcdoc;
-  }
-  function debounceWriteIframe() {
-    clearTimeout(timer);
-    timer = setTimeout(() => writeIframe(), 200);
   }
   function createEditor() {
     const theme = window.matchMedia("(prefers-color-scheme: dark)").matches
@@ -144,18 +176,39 @@
       });
     });
     jsEditor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
-      htmlEditor.trigger("a", "editor.action.formatDocument");
-      cssEditor.trigger("a", "editor.action.formatDocument");
-      jsEditor.trigger("a", "editor.action.formatDocument");
+      formatDocument();
     });
   }
 
+  function formatDocument() {
+    htmlEditor.trigger("a", "editor.action.formatDocument");
+    cssEditor.trigger("a", "editor.action.formatDocument");
+    jsEditor.trigger("a", "editor.action.formatDocument");
+    if (isautorun.checked) {
+      writeIframe();
+    }
+  }
+
   run.addEventListener("click", writeIframe);
-  outputIframe.addEventListener("load", () => {
-    const contentWindow = outputIframe.contentWindow,
-      body = contentWindow.document.body;
-    contentWindow?.executeExample?.();
+  basehtml.addEventListener("click", () => {
+    htmlEditor.setValue(
+      '<!DOCTYPE html>\r\n<html>\r\n<head>\r\n<meta charset="utf-8">\r\n<title>文档标题</title>\r\n</head>\r\n<body>\r\n\t<h1>我的第一个HTML页面</h1>\r\n\t<p>我的第一个段落。</p>\r\n</body>\r\n</html>\r\n'
+    );
   });
+
+  isautorun.setAttribute("checked", true);
+  isautorun.addEventListener("change", (e) => {
+    isautorun.setAttribute("checked", e.target.checked);
+  });
+
+  download.addEventListener("click", () => {
+    const text = generateSrcDoc();
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([text], { type: "text/html" }));
+    a.download = "demo.html";
+    a.click();
+  });
+
   outputhHeader.addEventListener("click", (e) => {
     e.target.classList.contains("reset") && window.location.reload();
   });
@@ -163,6 +216,20 @@
     document.querySelector("#console code").textContent = "";
   });
   editorContainer.classList.remove("hidden");
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "s" && e.ctrlKey) {
+      e.preventDefault();
+      formatDocument();
+    }
+  });
+  outputIframe.addEventListener("keydown", (e) => {
+    if (e.key === "s" && e.ctrlKey) {
+      e.preventDefault();
+      console.log("ctrl + s");
+    }
+  });
+
   const showTabs = (function (e) {
     return e.dataset && e.dataset.tabs
       ? e.dataset.tabs.split(",")
