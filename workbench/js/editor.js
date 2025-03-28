@@ -14,6 +14,13 @@
   const basehtml = document.getElementById("basehtml");
   const isautorun = document.getElementById("isautorun");
   const download = document.getElementById("download");
+  const libsBtn = document.getElementById("libsBtn");
+  const libsModal = document.getElementById("libs_modal");
+  const libsClose = document.getElementById("libs_close");
+  const searchInput = document.getElementById("searchInput");
+  const searchButton = document.getElementById("searchButton");
+  const spinner = document.getElementById("spinner");
+  const libsTable = document.getElementById("libs-table");
   class Storage {
     constructor(options) {
       this.storeHandler = localStorage;
@@ -208,6 +215,100 @@
     a.download = "demo.html";
     a.click();
   });
+  libsBtn.addEventListener("click", () => {
+    libsModal.style.display = "block";
+  });
+  libsClose.addEventListener("click", () => {
+    libsModal.style.display = "none";
+  });
+  window.onclick = function (event) {
+    if (event.target == libsModal) {
+      libsModal.style.display = "none";
+    }
+  };
+
+  function handleSearch(value) {
+    if (spinner.innerText == "Searching...") return;
+    if (!value) {
+      libsTable.innerHTML = "";
+      libsTable.style.display = "none";
+      return;
+    }
+    spinner.innerText = "Searching...";
+    // 发起请求
+    fetch(`https://api.cdnjs.com/libraries?search=${value}&fields=homepage`)
+      .then((res) => res.json())
+      .then((data) => {
+        // 构建表格内容
+        const rows = data.results
+          .slice(0, 10)
+          .map(
+            (item, index) => `
+            <tr>
+                <th>${index + 1}</th>
+                <td>${item.name}</td>
+                <td>${item.latest}</td>
+                <td><button class="btn btn-ghost btn-xs" data-name="${
+                  item.name
+                }" data-libsrc="${
+              item.latest
+            }" onclick="insertLib(event)">插入</button></td>
+            </tr>
+        `
+          )
+          .join("");
+        // 更新表格
+        libsTable.style.display = "block";
+        if (rows) {
+          libsTable.innerHTML = `<table class="table"><thead><tr><th></th><th>库名</th><th>地址</th><th>操作</th></tr></thead><tbody>${rows}</tbody></table>`;
+        } else {
+          libsTable.innerHTML =
+            '<table class="table"><thead><tr><th></th><th>库名</th><th>地址</th><th>操作</th></tr></thead><tbody><tr><td colspan="4" style="text-align: center;">Empty</td></tr></tbody></table>';
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        // 请求失败处理
+        alert("请求失败，请稍后重试。");
+      })
+      .finally(() => {
+        spinner.innerText = "Press enter to search";
+      });
+  }
+  searchInput.addEventListener("search", (e) => {
+    handleSearch(e.target.value);
+  });
+  searchButton.addEventListener("click", () => {
+    handleSearch(searchInput.value);
+  });
+
+  window.insertLib = function insertLib(event) {
+    const { name, libsrc } = event.target.dataset;
+    _editor_content = htmlEditor.getValue();
+    _libsrc = libsrc;
+    if (_editor_content.indexOf(_libsrc) !== -1) {
+      return;
+    }
+    if (_libsrc.indexOf(".js") !== -1) {
+      _libsrc = '<script src="' + _libsrc + '"></script>\n';
+    } else if (_libsrc.indexOf(".css") !== -1) {
+      _libsrc = '<link rel="stylesheet" href="' + _libsrc + '">\n';
+    }
+
+    patternBody = /<body[^>]*>((.|[\n\r])*)<\/body>/im;
+    array_matches_body = patternBody.exec(_editor_content);
+    patternHead = /<head[^>]*>((.|[\n\r])*)<\/head>/im;
+    array_matches_head = patternHead.exec(_editor_content);
+
+    if (array_matches_head) {
+      _editor_content = _editor_content.replace("</head>", _libsrc + "</head>");
+    } else if (array_matches_body) {
+      _editor_content = _editor_content.replace("</body>", _libsrc + "</body>");
+    } else {
+      _editor_content = _libsrc + _editor_content;
+    }
+    htmlEditor.setValue(_editor_content);
+  };
 
   outputhHeader.addEventListener("click", (e) => {
     e.target.classList.contains("reset") && window.location.reload();
@@ -223,10 +324,10 @@
       formatDocument();
     }
   });
+
   outputIframe.addEventListener("keydown", (e) => {
     if (e.key === "s" && e.ctrlKey) {
       e.preventDefault();
-      console.log("ctrl + s");
     }
   });
 
