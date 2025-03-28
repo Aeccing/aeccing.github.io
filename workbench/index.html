@@ -46,8 +46,11 @@
           <button id="download" role="button" type="button">
             下载
           </button>
+          <button id="libsBtn" role="button" type="button">
+            选择库
+          </button>
           <label>
-             <input type="checkbox" id="isautorun"  />保存时自动执行
+            <input type="checkbox" id="isautorun" />保存时自动执行
           </label>
           <button id="run" role="button" type="button">
             Run ❯
@@ -84,6 +87,35 @@
     </button>
     <div id="console" class="console"><code></code></div>
   </section>
+
+  <!-- The Modal -->
+  <div id="libs_modal" class="modal">
+
+    <!-- Modal content -->
+    <div class="modal-content">
+      <span id="libs_close" class="close">&times;</span>
+      <h3 class="py-4 text-lg font-bold">扩展库</h3>
+      <div class="join w-full flex">
+        <div class="flex-1">
+          <label class="input w-full join-item">
+            <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <g stroke-linejoin="round" stroke-linecap="round" stroke-width="2.5" fill="none" stroke="currentColor">
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.3-4.3"></path>
+              </g>
+            </svg>
+            <input id="searchInput" type="search" class="grow" placeholder="Search" />
+          </label>
+        </div>
+        <button id="searchButton" class="btn btn-neutral join-item">Search</button>
+      </div>
+      <p class="py-4" id="spinner">Press enter to search</p>
+      <div id="libs-table" class="overflow-x-auto rounded-box border border-base-content bg-base-100">
+      </div>
+    </div>
+
+  </div>
+
   <script>
     var require = {
       paths: {
