@@ -361,4 +361,10 @@
   tablistAddEventListener();
   createEditor();
   writeIframe();
+  Split(["#tab-container", "#output"], {
+    sizes: [60, 40],
+    minSize: 0,
+    gutterSize: 7,
+    snapOffset: 0,
+  });
 })();
