@@ -11,9 +11,9 @@
 </head>
 
 <body>
-  <header class="output-header border-rounded-top">
-    <h4 class="output-heading">HTML Demo</h4>
-    <button id="reset" class="reset" type="button">Reset</button>
+  <header class="header border-rounded-top">
+    <h4 class="heading">HTML Demo</h4>
+    <button class="reset" role="button" type="button">Reset</button>
   </header>
   <noscript>
     <div id="warning-no-script" class="warning">
@@ -40,13 +40,13 @@
           </button>
         </div>
         <div class="tab-actions">
-          <button id="basehtml" role="button" type="button">
+          <button class="basehtml" role="button" type="button">
             HTML 模板
           </button>
-          <button id="download" role="button" type="button">
+          <button class="download" role="button" type="button">
             下载
           </button>
-          <button id="libsBtn" role="button" type="button">
+          <button class="libs" role="button" type="button">
             选择库
           </button>
           <label>
@@ -70,23 +70,38 @@
         </div>
       </section>
     </section>
-    <div id="output" class="output-container">
-      <h4 class="output-label">Output</h4>
-      <iframe id="output-iframe"></iframe>
-    </div>
+    <section id="output-container" class="output-container">
+      <div class="output-header hidden">
+        <button type="button" role="button" class="clear">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 877.714 1024" class="icon-clear">
+            <path class="path0" fill="currentColor"
+              d="M749.714 510.286c0-62.286-18.286-120-49.714-168.571L269.143 772.001c49.143 32 107.429 50.857 169.714 50.857 171.429 0 310.857-140 310.857-312.571zM178.857 681.143l431.429-430.857c-49.143-33.143-108-52-171.429-52-171.429 0-310.857 140-310.857 312 0 63.429 18.857 121.714 50.857 170.857zm698.857-170.857c0 243.429-196.571 440.571-438.857 440.571S0 753.714 0 510.286c0-242.857 196.571-440 438.857-440s438.857 197.143 438.857 440z" />
+          </svg>
+          clear console
+        </button>
+      </div>
+      <div class="output-content">
+        <section id="iframe-container" class="iframe-container">
+          <h4 class="iframe-label">Iframe Output</h4>
+          <iframe id="output-iframe"></iframe>
+        </section>
+        <section id="console-container" class="console-container">
+          <h4 class="console-label">Console Output</h4>
+          <div class="buttons-container">
+            <button type="button" role="button" class="clear">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 877.714 1024" class="icon-clear">
+                <path class="path0" fill="currentColor"
+                  d="M749.714 510.286c0-62.286-18.286-120-49.714-168.571L269.143 772.001c49.143 32 107.429 50.857 169.714 50.857 171.429 0 310.857-140 310.857-312.571zM178.857 681.143l431.429-430.857c-49.143-33.143-108-52-171.429-52-171.429 0-310.857 140-310.857 312 0 63.429 18.857 121.714 50.857 170.857zm698.857-170.857c0 243.429-196.571 440.571-438.857 440.571S0 753.714 0 510.286c0-242.857 196.571-440 438.857-440s438.857 197.143 438.857 440z" />
+              </svg>
+              clear
+            </button>
+          </div>
+          <div id="console" class="console"><code></code></div>
+        </section>
+      </div>
+    </section>
   </div>
 
-  <section class="console-container hidden" aria-hidden="true">
-    <h4 class="console-label">Console Output</h4>
-    <button type="button" id="clear" class="clear">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 877.714 1024" class="icon-clear">
-        <path class="path0" fill="currentColor"
-          d="M749.714 510.286c0-62.286-18.286-120-49.714-168.571L269.143 772.001c49.143 32 107.429 50.857 169.714 50.857 171.429 0 310.857-140 310.857-312.571zM178.857 681.143l431.429-430.857c-49.143-33.143-108-52-171.429-52-171.429 0-310.857 140-310.857 312 0 63.429 18.857 121.714 50.857 170.857zm698.857-170.857c0 243.429-196.571 440.571-438.857 440.571S0 753.714 0 510.286c0-242.857 196.571-440 438.857-440s438.857 197.143 438.857 440z" />
-      </svg>
-      clear console
-    </button>
-    <div id="console" class="console"><code></code></div>
-  </section>
 
   <!-- The Modal -->
   <div id="libs_modal" class="modal">
