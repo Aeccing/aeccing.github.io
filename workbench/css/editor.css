@@ -782,6 +782,9 @@ button[role="tab"][aria-selected="true"] {
   top: 0;
   z-index: 2;
 }
+.console-label {
+  padding: 1rem;
+}
 
 .icon-clear {
   height: 12px;
