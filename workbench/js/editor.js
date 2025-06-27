@@ -29,7 +29,7 @@
   const storage = new Storage();
   function generateSrcDoc() {
     const contentMap = {
-      htmlContent: htmlEditor.getValue(),
+      htmlContent: .getValue(),
       cssContent: cssEditor.getValue(),
       jsContent: jsEditor.getValue(),
     };
@@ -318,6 +318,27 @@
         jsEditor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
           formatDocument();
         });
+	      // ✅ 常见 HTML 标签列表
+	      const htmlTags = [
+	        "div", "span", "section", "article", "header", "footer", "main",
+	        "aside", "nav", "ul", "ol", "li", "a", "p", "h1", "h2", "h3",
+	        "h4", "h5", "h6", "button", "input", "textarea", "label", "form",
+	        "table", "thead", "tbody", "tr", "td", "th", "img", "video", "svg"
+	      ];
+
+	      // ✅ 注册所有标签的 Snippet
+	      monaco.languages.registerCompletionItemProvider('html', {
+	        provideCompletionItems: () => {
+	          const suggestions = htmlTags.map(tag => ({
+	            label: tag,
+	            kind: monaco.languages.CompletionItemKind.Snippet,
+	            insertText: `<${tag}>$0</${tag}>`,
+	            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+	            documentation: `Insert <${tag}></${tag}>`
+	          }));
+	          return { suggestions };
+	        }
+	      });
       }
       function writeIframe() {
         const text = generateSrcDoc();
