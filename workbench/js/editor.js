@@ -371,7 +371,7 @@
       tabActions.addEventListener("click", (e) => {
         if (e.target.classList.contains("basehtml")) {
           htmlEditor.setValue(
-            '<!DOCTYPE html>
+            `<!DOCTYPE html>
               <html lang="en">
               
               <head>
@@ -390,7 +390,7 @@
               	</div>
               </body>
               
-              </html>'
+              </html>`
           );
           // htmlEditor.setValue(
           //   '<!DOCTYPE html>\r\n<html>\r\n<head>\r\n<meta charset="utf-8">\r\n<title>文档标题</title>\r\n</head>\r\n<body>\r\n\t<h1>我的第一个HTML页面</h1>\r\n\t<p>我的第一个段落。</p>\r\n</body>\r\n</html>\r\n'
