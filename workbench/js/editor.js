@@ -372,25 +372,25 @@
         if (e.target.classList.contains("basehtml")) {
           htmlEditor.setValue(
             `<!DOCTYPE html>
-              <html lang="en">
-              
-              <head>
-              	<meta charset="UTF-8" />
-              	<title>Tailwind CDN 示例</title>
-              	<script src="https://cdn.tailwindcss.com"></script>
-              </head>
-              
-              <body class="bg-gray-100 p-6">
-              	<h1 class="text-2xl font-bold mb-4 text-blue-600">我的第一个HTML页面</h1>
-              	<div class="grid grid-cols-3 min-w-[300px] w-max gap-4 overflow-x-auto">
-              		<div class="bg-blue-500 text-white text-center p-4 rounded">1</div>
-              		<div class="bg-blue-500 text-white text-center p-4 rounded">2</div>
-              		<div class="bg-blue-500 text-white text-center p-4 rounded">3</div>
-              		<div class="bg-blue-500 text-white text-center p-4 rounded">4</div>
-              	</div>
-              </body>
-              
-              </html>`
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<title>Tailwind CDN 示例</title>
+	<script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 p-6">
+	<h1 class="text-2xl font-bold mb-4 text-blue-600">我的第一个HTML页面</h1>
+	<div class="grid grid-cols-3 min-w-[300px] w-max gap-4 overflow-x-auto">
+		<div class="bg-blue-500 text-white text-center p-4 rounded">1</div>
+		<div class="bg-blue-500 text-white text-center p-4 rounded">2</div>
+		<div class="bg-blue-500 text-white text-center p-4 rounded">3</div>
+		<div class="bg-blue-500 text-white text-center p-4 rounded">4</div>
+	</div>
+</body>
+
+</html>`
           );
           // htmlEditor.setValue(
           //   '<!DOCTYPE html>\r\n<html>\r\n<head>\r\n<meta charset="utf-8">\r\n<title>文档标题</title>\r\n</head>\r\n<body>\r\n\t<h1>我的第一个HTML页面</h1>\r\n\t<p>我的第一个段落。</p>\r\n</body>\r\n</html>\r\n'
