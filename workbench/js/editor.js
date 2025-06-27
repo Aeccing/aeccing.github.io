@@ -29,7 +29,7 @@
   const storage = new Storage();
   function generateSrcDoc() {
     const contentMap = {
-      htmlContent: .getValue(),
+      htmlContent: htmlEditor.getValue(),
       cssContent: cssEditor.getValue(),
       jsContent: jsEditor.getValue(),
     };
